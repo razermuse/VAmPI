@@ -1,7 +1,7 @@
 FROM python:3.7-alpine
 
 RUN mkdir /vampi
-RUN apk --update add bash nano g++ gcc make autoconf automake alpine-sdk
+RUN apk --update add bash nano g++ gcc make autoconf automake alpine-sdk linux-headers
 
 ENV vulnerable=1
 ENV tokentimetolive=60
