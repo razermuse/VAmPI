@@ -12,7 +12,7 @@ vuln = int(os.getenv('vulnerable', 1))
 # token alive for how many seconds?
 alive = int(os.getenv('tokentimetolive', 60))
 
-vuln_app = ContrastMiddleware(vuln_app)
+vuln_app.wsgi_app = ContrastMiddleware(vuln_app)
 
 # start the app with port 5000 and debug on!
 if __name__ == '__main__':
