@@ -9,7 +9,7 @@ ENV tokentimetolive=60
 COPY . /vampi
 WORKDIR /vampi
 
-RUN pip install -r requirements.txt
+RUN pip3 install -r requirements.txt
 
 ENTRYPOINT ["python"]
 CMD ["app.py"]
