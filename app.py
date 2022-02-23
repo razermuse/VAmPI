@@ -1,5 +1,6 @@
 from config import vuln_app
 import os
+from contrast.agent.middlewares.flask_middleware import FlaskMiddleware as ContrastMiddleware
 
 '''
  Decide if you want to server a vulnerable version or not!
@@ -11,6 +12,7 @@ vuln = int(os.getenv('vulnerable', 1))
 # token alive for how many seconds?
 alive = int(os.getenv('tokentimetolive', 60))
 
+app.wsgi_app = ContrastMiddleware(app)
 
 # start the app with port 5000 and debug on!
 if __name__ == '__main__':
