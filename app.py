@@ -1,6 +1,6 @@
 from config import vuln_app
 import os
-from contrast.wsgi import ContrastMiddleware
+from contrast.flask import ContrastMiddleware
 
 '''
  Decide if you want to server a vulnerable version or not!
