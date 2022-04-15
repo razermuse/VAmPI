@@ -1,19 +1,5 @@
 version: "3"
 services:
- vampi-secure:
-  image: smithst987/vampi_docker:latest
-  container_name: vampi-secure
-  build: .
-  environment:  
-    - CONTRAST__ENABLE=TRUE
-    - CONTRAST__APPLICATION__NAME=VAmPI-secure
-    - CONTRAST__APPLICATION__GROUP=application_control_2
-    - CONTRAST__APPLICATION__METADATA=bU=PS, contact=steve.smith@contrastsecurity.com
-  ports:
-   - 5001:5000
-  environment:
-   - vulnerable=0
-
  vampi-vulnerable:
   image: smithst987/vampi_docker:latest
   container_name: vampi-vulnerable
