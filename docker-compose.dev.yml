@@ -3,7 +3,7 @@ version: '3.4'
 services:
   vampi-vulnerable:
     environment:
-      - CONTRAST__SERVER__NAME=VAmPI-vulnerable-dev
+      - CONTRAST__SERVER__NAME=VAmPI-container-dev
       - CONTRAST__SERVER__ENVIRONMENT=Development 
       - CONTRAST__ASSESS__ENABLE=true
       - CONTRAST__PROTECT__ENABLE=false
