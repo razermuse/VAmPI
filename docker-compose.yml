@@ -10,6 +10,6 @@ services:
     - CONTRAST__APPLICATION__GROUP=application_control_2
     - CONTRAST__APPLICATION__METADATA=bU=PS, contact=steve.smith@contrastsecurity.com
   ports:
-   - 5002:5000
+   - 5002:5002
   environment:
    - vulnerable=1
