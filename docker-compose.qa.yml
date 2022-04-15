@@ -1,14 +1,6 @@
 version: '3.4'
 
 services:
-  vampi-secure:
-    environment:
-      - CONTRAST__SERVER__NAME=VAmPI-secure-qa
-      - CONTRAST__SERVER__ENVIRONMENT=qa
-      - CONTRAST__ASSESS__ENABLE=true
-      - CONTRAST__PROTECT__ENABLE=false
-  
-services:
   vampi-vulnerable:
     environment:
       - CONTRAST__SERVER__NAME=VAmPI-vulnerable-qa
