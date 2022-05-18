@@ -1,12 +1,21 @@
-# VAmPI
+# VAmPI with Contrast
 **The Vulnerable API** *(Based on OpenAPI 3)*
 ![vampi](https://i.imgur.com/zR0quKf.jpg)
 
-
 VAmPI is a vulnerable API made with Flask and it includes vulnerabilities from the OWASP top 10 vulnerabilities for APIs. It was created as I wanted a vulnerable API to evaluate the efficiency of tools used to detect security issues in APIs. It includes a switch on/off to allow the API to be vulnerable or not while testing. This allows to cover better the cases for false positives/negatives. VAmPI can also be used for learning/teaching purposes. You can find a bit more details about the vulnerabilities in [erev0s.com](https://erev0s.com/blog/vampi-vulnerable-api-security-testing/).
+Vulpy is a web application developed in Python / Flask / SQLite that has two faces.
 
+## Customizing token timeout and vulnerable environment or not
+If you would like to alter the timeout of the token created after login or if you want to change the environment **not** to be vulnerable then you can use a few ways depending how you run the application.
 
-#### Features
+ - If you run it like normal with `python3 app.py` then all you have to do is edit the `alive` and `vuln` variables defined in the `app.py` itself. The `alive` variable is measured in seconds, so if you put `100`, then the token expires after 100 seconds. The `vuln` variable is like boolean, if you set it to `1` then the application is vulnerable, and if you set it to `0` the application is not vulnerable.
+ - If you run it through Docker, then you must either pass environment variables to the `docker run` command or edit the `Dockerfile` and rebuild. 
+   - Docker run example: `docker run -d -e vulnerable=0 -e tokentimetolive=300 -p 5000:5000 vampire_docker:latest`
+     - One nice feature to running it this way is you can startup a 2nd container with `vulnerable=1` on a different port and flip easily between the two.
+
+   - In the Dockerfile you will find two environment variables being set, the `ENV vulnerable=1` and the `ENV tokentimetolive=60`. Feel free to change it before running the docker build command.
+
+## Features
  - Based on OWASP Top 10 vulnerabilities for APIs.
  - OpenAPI3 specs and Postman Collection included.
  - Global switch on/off to have a vulnerable environment or not.
@@ -35,7 +44,7 @@ A quick rundown of the actions included can be seen in the following table:
 For more details you can use a service like the [swagger editor](https://editor.swagger.io) supplying it the OpenAPI specification which can be found in the directory `openapi_specs`.
 
 
-#### List of Vulnerabilities
+### List of Vulnerabilities
  - SQLi Injection
  - Unauthorized Password Change
  - Broken Object Level Authorization
@@ -45,43 +54,72 @@ For more details you can use a service like the [swagger editor](https://editor.
  - RegexDOS (Denial of Service)
  - Lack of Resources & Rate Limiting
 
+#### WARNING!
+THIS WEB APPLICATION CONTAINS NUMEROUS SECURITY VULNERABILITIES WHICH WILL RENDER YOUR COMPUTER VERY INSECURE WHILE RUNNING! IT IS HIGHLY RECOMMENDED TO COMPLETELY DISCONNECT YOUR COMPUTER FROM ALL NETWORKS WHILE RUNNING!
+
+#### Google Chrome Note
+Google Chrome performs filtering for reflected XSS attacks. These attacks will not work unless chrome is run with the argument `--disable-xss-auditor`.
+
+##### Contrast Instrumentation 
+This repo includes the components necessary to instrument contrast Assess/Protect with this Python application except for the contrast_security.yaml file containing the connection strings.
+
+Specifically modified:
+
+1. config.py has been modified to include the Contrast Middleware component "from contrast.flask import ContrastMiddleware" and "vuln_app.app.wsgi_app = ContrastMiddleware(vuln_app.app)".
+2. Updated requirements.txt to inlcude contrast-agent.
+3. The Dockerfile uses python:3.7-alpine and adds/upgrades specific packages with apk. It also sets two important environment variables (vulnerable and tokentimetolive) and installs the requirements.
+4. The docker-compose.yml sets a few other specific environment variables. Unlike other application languages, I'm letting the agent pick the contrast_security.yaml file up from the root of the application which is the /vampi/ directory.
+5. Three other docker-compose YAMLs depending on what "environment" you're wanting to run: Development, QA, or Production.
+
+contrast_security.yaml example:
+
+api:<br>
+&nbsp;&nbsp;url: https://apptwo.contrastsecurity.com/Contrast<br>
+&nbsp;&nbsp;api_key: [REDACTED<br>
+&nbsp;&nbsp;service_key: [REDACTED]<br>
+&nbsp;&nbsp;user_name: [REDACTED]<br>
+application:<br>
+&nbsp;&nbsp;session_metadata: buildNumber=${BUILD_NUMBER}, committer=Steve Smith #buildNumber is inserted via Jenkins Pipeline<br>
+
+Your contrast_security.yaml file needs to be in the root of the web application directory. It then gets copied into the Docker Container.
+
+# Requirements
+
+1. Docker Community Edition
+2. docker-compose
+
+When built, the Dockerfile pulls all of the code into the Docker Container. 
+
+## How to build and run
+
+### 1. Running in a Docker Container
+
+The provided Dockerfile is compatible with both Linux and Windows containers (note from Steve: I've only run it on Linux).
+
+To build a Docker image, execute the following command: docker-compose build
+
+### Linux Containers
+
+To run the `vampi` Container image, execute one of the following commands:
+
+1. Development: docker-compose -f docker-compose.yml -f docker-compose.dev.yml up -d
+
+2. QA: docker-compose -f docker-compose.yml -f docker-compose.qa.yml up -d
+
+3. Production (this disables Assess and enables Protect): docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+
+VAmPI should be accessible at http://ip_address:5002.
 
 
- ## Run it
-It is a Flask application so in order to run it you can install all requirements and then run the `app.py`.
-To install all requirements simply run `pip3 install -r requirements.txt` and then `python3 app.py`.
+### Stopping the Docker container
 
-Or if you prefer you can also run it through docker or docker compose.
+To stop the `vampi` container, execute the following command in the same directory as your docker-compose files: docker-compose stop 
 
- #### Run it through Docker
+### 2. Building with Jenkins
+Included is a sample Jenkinsfile that can be used as a Jenkins Pipeline to build and run the application. The Jenkins Pipeline passes buildNumber as a parameter to the YAML. 
 
-**Build with**
-~~~~
-docker build -t vampi_docker:latest .
-~~~~
- **and Run** *(remove the -d if you want to see the output in your terminal)*
- ~~~~
-docker run -d -p 5000:5000 vampi_docker:latest
- ~~~~
-
-[Note: if you run Docker on newer versions of the MacOS, use `-p 5001:5000` to avoid conflicting with the AirPlay Receiver service. Alternatively, you could disable the AirPlay Receiver service in your System Preferences -> Sharing settings.]
-
-  #### Run it through Docker Compose
-Assuming you've built the container per the above steps, run one instance securely (port 5001) and another insecurely (port 5002):
-~~~~
-docker compose up -d
-~~~~
-
-## Customizing token timeout and vulnerable environment or not
-If you would like to alter the timeout of the token created after login or if you want to change the environment **not** to be vulnerable then you can use a few ways depending how you run the application.
-
- - If you run it like normal with `python3 app.py` then all you have to do is edit the `alive` and `vuln` variables defined in the `app.py` itself. The `alive` variable is measured in seconds, so if you put `100`, then the token expires after 100 seconds. The `vuln` variable is like boolean, if you set it to `1` then the application is vulnerable, and if you set it to `0` the application is not vulnerable.
- - If you run it through Docker, then you must either pass environment variables to the `docker run` command or edit the `Dockerfile` and rebuild. 
-   - Docker run example: `docker run -d -e vulnerable=0 -e tokentimetolive=300 -p 5000:5000 vampire_docker:latest`
-     - One nice feature to running it this way is you can startup a 2nd container with `vulnerable=1` on a different port and flip easily between the two.
-
-   - In the Dockerfile you will find two environment variables being set, the `ENV vulnerable=1` and the `ENV tokentimetolive=60`. Feel free to change it before running the docker build command.
-
-
- [Picture from freepik - www.freepik.com](https://www.freepik.com/vectors/party)
-
+#### Default user accounts
+The database comes pre-populated with these user accounts created as part of the seed data -
+* Admin Account - u:admin p:pass1 
+* User Accounts - u:name1 p:pass1
+* New users can also be added using the sign-up page.
