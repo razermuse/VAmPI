@@ -3,7 +3,7 @@
 ![vampi](https://i.imgur.com/zR0quKf.jpg)
 
 VAmPI is a vulnerable API made with Flask and it includes vulnerabilities from the OWASP top 10 vulnerabilities for APIs. It was created as I wanted a vulnerable API to evaluate the efficiency of tools used to detect security issues in APIs. It includes a switch on/off to allow the API to be vulnerable or not while testing. This allows to cover better the cases for false positives/negatives. VAmPI can also be used for learning/teaching purposes. You can find a bit more details about the vulnerabilities in [erev0s.com](https://erev0s.com/blog/vampi-vulnerable-api-security-testing/).
-Vulpy is a web application developed in Python / Flask / SQLite that has two faces.
+Vulpy is a web application developed in Python / Flask / SQLite that has two faces: secure and insecure.
 
 ## Customizing token timeout and vulnerable environment or not
 If you would like to alter the timeout of the token created after login or if you want to change the environment **not** to be vulnerable then you can use a few ways depending how you run the application.
@@ -13,7 +13,7 @@ If you would like to alter the timeout of the token created after login or if yo
    - Docker run example: `docker run -d -e vulnerable=0 -e tokentimetolive=300 -p 5000:5000 vampire_docker:latest`
      - One nice feature to running it this way is you can startup a 2nd container with `vulnerable=1` on a different port and flip easily between the two.
 
-   - In the Dockerfile you will find two environment variables being set, the `ENV vulnerable=1` and the `ENV tokentimetolive=60`. Feel free to change it before running the docker build command.
+   - In the Dockerfile you will find two environment variables being set, the `ENV vulnerable=1` and the `ENV tokentimetolive=60`. Feel free to change it before running the docker-compose build command.
 
 ## Features
  - Based on OWASP Top 10 vulnerabilities for APIs.
