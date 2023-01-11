@@ -1,7 +1,6 @@
 import os
 import connexion
 from flask_sqlalchemy import SQLAlchemy
-from contrast.flask import ContrastMiddleware
 
 vuln_app = connexion.App(__name__, specification_dir='./openapi_specs')
 
@@ -14,5 +13,3 @@ vuln_app.app.config['SECRET_KEY'] = 'random'
 db = SQLAlchemy(vuln_app.app)
 
 vuln_app.add_api('openapi3.yml')
-
-vuln_app.app.wsgi_app = ContrastMiddleware(vuln_app.app) 
