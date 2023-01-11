@@ -49,9 +49,9 @@ THIS WEB APPLICATION CONTAINS NUMEROUS SECURITY VULNERABILITIES WHICH WILL RENDE
 #### Google Chrome Note
 Google Chrome performs filtering for reflected XSS attacks. These attacks will not work unless chrome is run with the argument `--disable-xss-auditor`.
 
-##### Contrast Instrumentation 
-This repo includes the components necessary to instrument contrast Assess/Protect with this Python application except for the contrast_security.yaml file containing the connection strings.
+##### Modifications
 
+VAmPI has been modified to run on port 5002 so as to not interfere with Vulpy which listens on port 5000.
 
 # Requirements
 
@@ -70,13 +70,9 @@ To build a Docker image, execute the following command: docker-compose build
 
 ### Linux Containers
 
-To run the `vampi` Container image, execute one of the following commands:
+To run the `vampi` Container image, execute the following command:
 
-1. Development: docker-compose -f docker-compose.yml -f docker-compose.dev.yml up -d
-
-2. QA: docker-compose -f docker-compose.yml -f docker-compose.qa.yml up -d
-
-3. Production (this disables Assess and enables Protect): docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+docker-compose up -d
 
 VAmPI should be accessible at http://ip_address:5002.
 
