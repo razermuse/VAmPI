@@ -1,4 +1,4 @@
-# VAmPI with Contrast
+# VAmPI
 **The Vulnerable API** *(Based on OpenAPI 3)*
 ![vampi](https://i.imgur.com/zR0quKf.jpg)
 
@@ -52,25 +52,6 @@ Google Chrome performs filtering for reflected XSS attacks. These attacks will n
 ##### Contrast Instrumentation 
 This repo includes the components necessary to instrument contrast Assess/Protect with this Python application except for the contrast_security.yaml file containing the connection strings.
 
-Specifically modified:
-
-1. config.py has been modified to include the Contrast Middleware component "from contrast.flask import ContrastMiddleware" and "vuln_app.app.wsgi_app = ContrastMiddleware(vuln_app.app)".
-2. Updated requirements.txt to inlcude contrast-agent.
-3. The Dockerfile uses python:3.7-alpine and adds/upgrades specific packages with apk. It also sets two important environment variables (vulnerable and tokentimetolive) and installs the requirements.
-4. The docker-compose.yml sets a few other specific environment variables. Unlike other application languages, I'm letting the agent pick the contrast_security.yaml file up from the root of the application which is the /vampi/ directory.
-5. Three other docker-compose YAMLs depending on what "environment" you're wanting to run: Development, QA, or Production.
-
-contrast_security.yaml example:
-
-api:<br>
-&nbsp;&nbsp;url: https://apptwo.contrastsecurity.com/Contrast<br>
-&nbsp;&nbsp;api_key: [REDACTED<br>
-&nbsp;&nbsp;service_key: [REDACTED]<br>
-&nbsp;&nbsp;user_name: [REDACTED]<br>
-application:<br>
-&nbsp;&nbsp;session_metadata: buildNumber=${BUILD_NUMBER}, committer=Steve Smith #buildNumber is inserted via Jenkins Pipeline<br>
-
-Your contrast_security.yaml file needs to be in the root of the web application directory. It then gets copied into the Docker Container.
 
 # Requirements
 
